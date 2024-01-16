@@ -40,8 +40,8 @@ button.onclick = async () => {
   }
   recorder.start(2000)
 }
-    window.onunhandledrejection = log 
-    window.onerror = log
+    window.onunhandledrejection = ({reason})=>log(reason) 
+    window.onerror = ({reason})=>log(reason) 
     log(JSON.stringify(navigator.mediaDevices.getSupportedConstraints()).replace(/,/g, '\n'))
   </script>
 </head>
