@@ -27,13 +27,10 @@ button.onclick = async () => {
   recorder.ondataavailable = ({ data }) => {
     blobs.push(data)
     log('created data chunk length ' + data.size)
+    fetch(input.value, {method:'POST', body:data})
+    log('uploading blob to:' + new URL(input.value).toString())
   }
   recorder.onstop = () => {
-    let i = 0
-    log('uploading blobs to:' + new URL(input.value).toString())
-    for (const blob of blobs) {
-      fetch(input.value, {method:'POST', body:blob})
-    }
     for (const track of stream.getTracks()) {
       track.stop()
     }
