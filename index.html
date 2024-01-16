@@ -8,7 +8,7 @@
   <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
   <script async defer type="module">
 function log (text) {
-  logDiv.append(text.toString())
+  logDiv.append(text.toString() + '\n')
 }
 let recorder
 button.onclick = async () => {
@@ -48,7 +48,7 @@ button.onclick = async () => {
 <body>
   <button id="button">Record audio</button>
   <input type=text id=input placeholder="CORS enabled upload url">
-  <div id=logDiv>
+  <div id="logDiv" style="white-space: pre-wrap;">
     
   </div>
 </body>
