@@ -7,13 +7,18 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
   <script async defer type="module">
+function log (text) {
+  log.append(text.toString)
+}
 let recorder
 button.onclick = async () => {
   if (recorder) {
     recorder.stop()
+    log('recording end')
     recorder = null
     return
   }
+  log('recording start')
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
 
   recorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/mp4;codecs=mp4a') ? 'audio/mp4;codecs=mp4a' : 'audio/webm;codecs=opus' })
@@ -21,9 +26,11 @@ button.onclick = async () => {
   const blobs = []
   recorder.ondataavailable = ({ data }) => {
     blobs.push(data)
+    log('created data chunk length ' + data.size)
   }
   recorder.onstop = () => {
     let i = 0
+    log('uploading blobs to:' + new URL(input.value).toString())
     for (const blob of blobs) {
       fetch(input.value, {method:'POST', body:blob})
     }
@@ -33,11 +40,16 @@ button.onclick = async () => {
   }
   recorder.start(2000)
 }
-button.after(JSON.stringify(navigator.mediaDevices.getSupportedConstraints()).replace(/,/g, '\n'))
+    window.onunhandledrejection = log 
+    window.onerror = log
+    log(JSON.stringify(navigator.mediaDevices.getSupportedConstraints()).replace(/,/g, '\n'))
   </script>
 </head>
 <body>
   <button id="button">Record audio</button>
   <input type=text id=input placeholder="CORS enabled upload url">
+  <div id=log>
+    
+  </div>
 </body>
 </html>
